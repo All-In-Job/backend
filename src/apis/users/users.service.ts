@@ -1,5 +1,5 @@
 import { User } from '@prisma/client';
-import prisma from '../../config';
+import prisma from '../../database/prismaConfig';
 import { IUserCreateDTO } from './interfaces/user-service.interface';
 
 export class UserService {

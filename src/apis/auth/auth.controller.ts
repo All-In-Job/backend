@@ -5,8 +5,8 @@ import {
     kakaoMiddleware,
     naverMiddleware,
     naverMiddlewareRedirect,
-} from './auth.middleware';
-import { kakaoMiddlewareRedirect } from './auth.middleware';
+} from '../../middleware/auth.middleware';
+import { kakaoMiddlewareRedirect } from '../../middleware/auth.middleware';
 
 class AuthController {
     router = Router();
