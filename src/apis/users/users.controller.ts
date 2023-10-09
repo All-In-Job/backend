@@ -7,9 +7,11 @@ import { ValidateTokenDTO } from '../../common/util/sms/dto/validateToken.dto';
 import { FindOneUserByEmailDTO } from './dto/findOneUserByEmail.dto';
 import { validateDTO } from '../../common/validator/validateDTO';
 import { FindOneUserByIdDTO } from './dto/findOneUserByID.dto';
-import { email, findOneUserByIDType } from '../../common/types';
+import { email, findOneUserByIDType, idType } from '../../common/types';
 import { asyncHandler } from '../../middleware/async.handler';
 import { Container } from 'typedi';
+import { CreateThermometerDTO } from './dto/create-thermometer.dto';
+import accessGuard from '../../middleware/auth.guard/access.guard';
 
 class UserController {
     router = Router();
@@ -46,6 +48,12 @@ class UserController {
         this.router.post(
             '/validateToken',
             asyncHandler(this.validateToken.bind(this)),
+        );
+
+        this.router.post(
+            '/createThermometer',
+            accessGuard.handle,
+            asyncHandler(this.createThermometer.bind(this)),
         );
     }
 
@@ -96,6 +104,24 @@ class UserController {
 
         res.status(200).json({
             data: await this.smsService.validateToken(req.body),
+        });
+    }
+
+    async createThermometer(req: Request, res: Response) {
+        const { id } = req.user as idType;
+        const { path, id: pathId } = req.body;
+
+        await validateDTO(new CreateThermometerDTO({ path, pathId }));
+
+        const datas = await this.userService.createThermometer({
+            path,
+            pathId,
+            id,
+        });
+        res.status(200).json({
+            data: {
+                ...datas,
+            },
         });
     }
 }

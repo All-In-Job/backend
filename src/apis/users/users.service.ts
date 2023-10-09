@@ -2,6 +2,7 @@ import { Provider, User } from '@prisma/client';
 import { CustomPrismaClient } from '../../database/prismaConfig';
 import {
     IUserCreateDTO,
+    IUserCreateThermometer,
     IUserFindOneUserByID,
 } from './interfaces/user.interface';
 import RedisClient from '../../database/redisConfig';
@@ -148,6 +149,36 @@ export class UserService {
             );
             this.redis.del(userData.email);
             return user.id;
+        });
+    }
+
+    async createThermometer({
+        path,
+        pathId,
+        id,
+    }: IUserCreateThermometer): Promise<User> {
+        console.log(path, pathId, id, '@@@@');
+
+        const obj: { [key: string]: () => { id: string; column: string } } = {
+            outside: () => ({ id: 'outsideId', column: 'outsides' }),
+            intern: () => ({ id: 'internId', column: 'interns' }),
+            competition: () => ({
+                id: 'competitionId',
+                column: 'competitions',
+            }),
+            language: () => ({ id: 'languageId', column: 'languages' }),
+            qnet: () => ({ id: 'qNetId', column: 'qnets' }),
+        };
+
+        return this.prisma.user.update({
+            where: { id },
+            data: {
+                [obj[path]().column]: {
+                    create: {
+                        [obj[path]().id]: pathId,
+                    },
+                },
+            },
         });
     }
 }

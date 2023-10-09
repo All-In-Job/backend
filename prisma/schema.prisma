@@ -23,12 +23,12 @@ enum Classify {
 }
 
 model User {
-  id            String          @id @unique @default(uuid())
-  email         String          @unique
+  id            String            @id @unique @default(uuid())
+  email         String            @unique
   provider      Provider
-  name          String          @db.VarChar(5)
-  nickname      String          @unique @db.VarChar(10)
-  phone         String          @db.VarChar(13)
+  name          String            @db.VarChar(5)
+  nickname      String            @unique @db.VarChar(10)
+  phone         String            @db.VarChar(13)
   profileImage  String
   major         String
   interests     UserInterest[]
@@ -36,6 +36,11 @@ model User {
   comments      Comment[]
   communityLike CommunityLike[]
   commentLike   CommentLike[]
+  competitions  UserCompetition[]
+  outsides      UserOutside[]
+  qnets         UserQnet[]
+  languages     UserLanguage[]
+  interns       UserIntern[]
 }
 
 model Community {
@@ -106,11 +111,11 @@ model UserInterest {
 
 // 대용량 데이터를 생각해서 -> 엘라스틱 서치
 model Outside {
-  id                    String @id @unique @default(uuid())
+  id                    String        @id @unique @default(uuid())
   Dday                  String
   title                 String
   view                  Int
-  mainImage             String @db.LongText
+  mainImage             String        @db.LongText
   organization          String
   enterprise            String
   target                String
@@ -119,20 +124,21 @@ model Outside {
   personnel             String
   region                String
   preferentialTreatment String
-  homePage              String @db.LongText
-  detail                String @db.LongText
+  homePage              String        @db.LongText
+  detail                String        @db.LongText
   benefits              String
   interests             String
   field                 String
   month                 Int
+  outsides              UserOutside[]
 }
 
 model Intern {
-  id                    String @id @unique @default(uuid())
+  id                    String       @id @unique @default(uuid())
   Dday                  String
   title                 String
   view                  Int
-  mainImage             String @db.LongText
+  mainImage             String       @db.LongText
   organization          String
   enterprise            String
   applicationPeriod     String
@@ -140,29 +146,31 @@ model Intern {
   personnel             String
   target                String
   region                String
-  homePage              String @db.LongText
-  detail                String @db.LongText
+  homePage              String       @db.LongText
+  detail                String       @db.LongText
+  interns               UserIntern[]
 }
 
 model Competition {
-  id                String @id @unique @default(uuid())
+  id                String            @id @unique @default(uuid())
   Dday              String
   title             String
   view              Int
-  mainImage         String @db.LongText
+  mainImage         String            @db.LongText
   organization      String
   enterprise        String
   target            String
   scale             Int?
   applicationPeriod String
   benefits          String
-  homePage          String @db.LongText
+  homePage          String            @db.LongText
   interests         String
-  detail            String @db.LongText
+  detail            String            @db.LongText
+  competitions      UserCompetition[]
 }
 
 model Language {
-  id                String  @id @unique @default(uuid())
+  id                String         @id @unique @default(uuid())
   classify          String
   test              String
   homePage          String
@@ -170,6 +178,7 @@ model Language {
   Dday              String
   resultDay         String
   applicationPeriod String
+  languages         UserLanguage[]
 }
 
 model QNet {
@@ -184,6 +193,7 @@ model QNet {
   examSchedules ExamSchedule[]
   subCategoryId String
   subCategory   SubCategory    @relation(fields: [subCategoryId], references: [id])
+  qnets         UserQnet[]
 }
 
 model MainCategory {
@@ -211,4 +221,44 @@ model ExamSchedule {
   resultDay   String
   qNetId      String
   qNet        QNet   @relation(fields: [qNetId], references: [id])
+}
+
+model UserCompetition {
+  id            String      @id @unique @default(uuid())
+  competition   Competition @relation(fields: [competitionId], references: [id])
+  competitionId String
+  user          User        @relation(fields: [userId], references: [id])
+  userId        String
+}
+
+model UserOutside {
+  id        String  @id @unique @default(uuid())
+  outside   Outside @relation(fields: [outsideId], references: [id])
+  outsideId String
+  user      User    @relation(fields: [userId], references: [id])
+  userId    String
+}
+
+model UserQnet {
+  id     String @id @unique @default(uuid())
+  qNet   QNet   @relation(fields: [qNetId], references: [id])
+  qNetId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+}
+
+model UserLanguage {
+  id         String   @id @unique @default(uuid())
+  language   Language @relation(fields: [languageId], references: [id])
+  languageId String
+  user       User     @relation(fields: [userId], references: [id])
+  userId     String
+}
+
+model UserIntern {
+  id       String @id @unique @default(uuid())
+  intern   Intern @relation(fields: [internId], references: [id])
+  internId String
+  user     User   @relation(fields: [userId], references: [id])
+  userId   String
 }
