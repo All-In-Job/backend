@@ -54,7 +54,7 @@ export interface createQNet {
         implNm: string;
         examSchedules: examSchedule[];
     };
-    mdobligFldNm: string;
+    categoryObj: object;
 }
 
 export type Path = {

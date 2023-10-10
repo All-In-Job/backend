@@ -27,140 +27,66 @@ export class CrawlingService {
     ) {}
 
     async findeCrawling({ ...data }: paths): Promise<any> {
-        console.log(this.elastic);
-        const { path, page, ..._data } = data;
+        const { path, page, classify, ..._data } = data;
+
         const datas: { [key: string]: string } = { ..._data };
-        const keywords: object[] = [];
+        const keywords: { [key: string]: object[] } = { must: [] };
         for (const key in _data) {
             const value = datas[key];
             if (key === 'scale') {
                 const [start, end] = value.split(',');
                 const scaleKeyword = !end
-                    ? { gte: +start }
-                    : { gte: +start || 0, lte: +end || 0 };
+                    ? { gte: start }
+                    : { gte: start || 0, lte: end || 0 };
 
-                keywords.push({ [key]: scaleKeyword });
-            } else if (key === 'mainCategory') {
-                keywords.push(
-                    ...value.split(',').map((el: string) => ({
-                        subCategory: { [key]: { keyword: el } },
-                    })),
-                );
-            } else if (key === 'subCategory') {
-                keywords.push(
-                    ...value
-                        .split(',')
-                        .map((el: string) => ({ [key]: { keyword: el } })),
-                );
-            } else if (path === 'language') {
-                keywords.push(
-                    ...value.split(',').map((el: string) => ({ [key]: el })),
+                keywords.must.push({ range: { [key]: scaleKeyword } });
+            } else if (classify) {
+                keywords.must.push(
+                    { term: { classify } },
+                    {
+                        bool: {
+                            should: [
+                                {
+                                    match: {
+                                        [key]: value.replace(',', ' '),
+                                    },
+                                },
+                            ],
+                        },
+                    },
                 );
             } else {
-                keywords.push(
-                    ...value
-                        .split(',')
-                        .map((el: string) => ({ [key]: { contains: el } })),
-                );
+                keywords.must.push({
+                    bool: {
+                        should: [{ match: { [key]: value.replace(',', ' ') } }],
+                    },
+                });
             }
         }
-        const obj = {
-            outside: () =>
-                this.prisma.outside.findMany({
-                    ...(keywords.length && {
-                        where: {
-                            OR: keywords.map((el: object) => el),
-                        },
-                    }),
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
+        return this.elastic
+            .search({
+                index: path,
+                _source_excludes: ['detail'],
+                body: {
+                    query: {
+                        ...(Object.keys(keywords)
+                            ? {
+                                  bool: keywords,
+                              }
+                            : { match_all: {} }),
                     },
-                    ...(page && { skip: (+page - 1) * 12 }),
-                    ...(page && { take: +page * 12 }),
-                }),
-
-            intern: () =>
-                this.prisma.intern.findMany({
-                    ...(keywords.length && {
-                        where: {
-                            OR: keywords.map((el: object) => el),
-                        },
-                    }),
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
-                        region: true,
-                    },
-                    ...(page && { skip: (+page - 1) * 12 }),
-                    ...(page && { take: +page * 12 }),
-                }),
-            competition: () =>
-                this.prisma.competition.findMany({
-                    ...(keywords.length && {
-                        where: {
-                            OR: keywords.map((el: object) => el),
-                        },
-                    }),
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
-                    },
-                    ...(page && { skip: (+page - 1) * 12 }),
-                    ...(page && { take: +page * 12 }),
-                }),
-            language: () =>
-                this.prisma.language.findMany({
-                    where: data.classify
-                        ? {
-                              AND: keywords.filter((el: any) => el.classify),
-                              OR: keywords.filter((el: any) => !el.classify),
-                          }
-                        : {
-                              OR: keywords.map((el: object) => el),
-                          },
-                    ...(page && { skip: (+page - 1) * 12 }),
-                    ...(page && { take: +page * 12 }),
-                }),
-            qnet: () =>
-                this.prisma.qNet.findMany({
-                    ...(keywords.length && {
-                        where: {
-                            OR: keywords.map((el: object) => el),
-                        },
-                    }),
-                    select: {
-                        jmNm: true,
-                        engJmNm: true,
-                        instiNm: true,
-                        implNm: true,
-                        view: true,
-                        examSchedules: {
-                            skip: 0,
-                            take: 1,
-                            orderBy: {
-                                resultDay: 'desc',
-                            },
-                        },
-                    },
-                }),
-        };
-        return (obj[path] || obj['language'])();
+                    ...(page
+                        ? { size: 12, from: +page * 12 }
+                        : { size: 10000 }),
+                },
+            })
+            .then((el) =>
+                el.body.hits.hits.map((el: any) => ({
+                    ...data,
+                    id: el._id,
+                    ...el._source,
+                })),
+            );
     }
 
     async myKeywordCrawling({ ...data }: paths): Promise<findCrawling> {
@@ -217,55 +143,22 @@ export class CrawlingService {
         return (obj[path] || obj['language'])();
     }
 
-    findSubCategory(keyword: string): Promise<SubCategory | null> {
-        return this.prisma.subCategory.findUnique({
-            where: { keyword },
-        });
-    }
-
-    async createMainCategory(
-        mainKeyword: string,
-        subKeyword: string,
-    ): Promise<SubCategory> {
-        let mainCategory;
-
-        try {
-            mainCategory = await this.prisma.mainCategory.create({
-                data: {
-                    keyword: mainKeyword,
-                },
-            });
-        } catch (error) {
-            mainCategory = await this.prisma.mainCategory.findUnique({
-                where: { keyword: mainKeyword },
-            });
-        }
-
-        let subCategory;
-
-        try {
-            subCategory = await this.prisma.subCategory.create({
-                data: {
-                    keyword: subKeyword,
-                    mainCategoryId: mainCategory!.id,
-                },
-            });
-        } catch (error) {
-            subCategory = await this.findSubCategory(subKeyword);
-        }
-
-        return subCategory!;
-    }
-
     async createLanguageData({
         classify,
         test,
         homePage,
         dataObj,
-    }: languagePath): Promise<Language> {
-        return await this.prisma.language.create({
-            data: { test, classify, homePage, ...dataObj },
+    }: languagePath): Promise<boolean> {
+        await this.elastic.index({
+            index: 'language',
+            body: {
+                test,
+                classify,
+                homePage,
+                ...dataObj,
+            },
         });
+        return true;
     }
 
     async createLinkareerData<T extends object>({
@@ -276,43 +169,28 @@ export class CrawlingService {
         data: T;
         path: createLinkareerPaths;
         month: number;
-    }): Promise<createCrawiling> {
-        const result = {
-            outside: async () =>
-                await this.prisma.outside.create({
-                    data: { ...(data as OutsideType), month },
-                }),
-            intern: async () =>
-                await this.prisma.intern.create({ data: data as InternType }),
-            competition: async () =>
-                await this.prisma.competition.create({
-                    data: {
-                        ...(data as CompetitionType),
-                        scale: +(data as CompetitionType).scale,
-                    },
-                }),
-        };
-
-        return result[path]();
-    }
-
-    async createQNetData({
-        data,
-        mdobligFldNm: keyword,
-    }: createQNet): Promise<QNet> {
-        const subCategory = await this.findSubCategory(keyword);
-
-        return await this.prisma.qNet.create({
-            data: {
+    }): Promise<boolean> {
+        const qqq = await this.elastic.index({
+            index: path,
+            body: {
                 ...data,
-                examSchedules: {
-                    createMany: {
-                        data: data.examSchedules,
-                    },
-                },
-                subCategoryId: subCategory!.id,
+                ...(month && { month }),
             },
         });
+        console.log(qqq);
+        return true;
+    }
+
+    async createQNetData({ data, categoryObj }: createQNet): Promise<boolean> {
+        await this.elastic.index({
+            index: 'qnet',
+            body: {
+                ...data,
+                ...categoryObj,
+            },
+        });
+
+        return true;
     }
 
     async bsetData({ path }: Path): Promise<findCrawling> {

@@ -152,7 +152,7 @@ export class PathCrawling {
         const category = await axios.get(
             'http://openapi.q-net.or.kr/api/service/rest/InquiryListNationalQualifcationSVC/getList?serviceKey=sWAEtBKCgnfT4ANvlYmgqRju8t9TcJHpyQvLY5zz6qu%2BRzrrMv%2FQyMHjzYUbtK%2FTJqePrdyM2nVPzTwEImSGvQ%3D%3D',
         );
-
+        let categoryObj = {};
         await Promise.all(
             category.data.response.body.items.item.map(async (el: itmeType) => {
                 const {
@@ -161,10 +161,15 @@ export class PathCrawling {
                     jmcd,
                 } = el;
                 if (QNetObj[jmcd]) {
-                    return await this.crawlingServcie.createMainCategory(
-                        mainKeyword,
-                        subKeyword,
-                    );
+                    categoryObj = {
+                        mainCategory: mainKeyword,
+                        subCategory: subKeyword,
+                    };
+
+                    // return await this.crawlingServcie.createMainCategory(
+                    //     mainKeyword,
+                    //     subKeyword,
+                    // );
                 }
             }),
         );
@@ -243,7 +248,7 @@ export class PathCrawling {
 
                     await this.crawlingServcie.createQNetData({
                         data,
-                        mdobligFldNm,
+                        categoryObj,
                     });
                 }
             });
