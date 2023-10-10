@@ -76,6 +76,7 @@ export type paths = {
     subCategory: string;
     page: string;
     classify: string;
+    count: string;
 };
 
 export type fidneCrawlingType = paths & { count: string };

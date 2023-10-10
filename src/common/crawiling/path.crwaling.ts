@@ -112,6 +112,7 @@ export class PathCrawling {
 
                         return this.crawlingServcie.createLinkareerData({
                             data,
+                            ...(dataType.scale && { scale: +dataType.scale }),
                             path,
                             month,
                         });

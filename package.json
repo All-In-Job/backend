@@ -13,7 +13,7 @@
         "lang": "ts-node src/common/crawiling/language.ts"
     },
     "dependencies": {
-        "@elastic/elasticsearch": "^7.7.0",
+        "@elastic/elasticsearch": "^7.17.0",
         "@prisma/client": "^5.1.1",
         "@types/node": "^20.5.0",
         "axios": "^1.4.0",

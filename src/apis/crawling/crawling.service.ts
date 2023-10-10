@@ -27,65 +27,50 @@ export class CrawlingService {
     ) {}
 
     async findeCrawling({ ...data }: paths): Promise<any> {
-        const { path, page, classify, ..._data } = data;
+        const { path, page, classify, count, ..._data } = data;
 
         const datas: { [key: string]: string } = { ..._data };
-        const keywords: { [key: string]: object[] } = { must: [] };
+        const must: object[] = [];
         for (const key in _data) {
             const value = datas[key];
             if (key === 'scale') {
                 const [start, end] = value.split(',');
                 const scaleKeyword = !end
-                    ? { gte: start }
-                    : { gte: start || 0, lte: end || 0 };
-
-                keywords.must.push({ range: { [key]: scaleKeyword } });
-            } else if (classify) {
-                keywords.must.push(
-                    { term: { classify } },
-                    {
-                        bool: {
-                            should: [
-                                {
-                                    match: {
-                                        [key]: value.replace(',', ' '),
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                );
+                    ? { gte: +start }
+                    : { gte: +start || 0, lte: +end };
+                must.push({ range: { [key]: scaleKeyword } });
             } else {
-                keywords.must.push({
-                    bool: {
-                        should: [{ match: { [key]: value.replace(',', ' ') } }],
-                    },
+                must.push({
+                    match: { [key]: value.replace(',', ' ') },
                 });
             }
         }
+
         return this.elastic
             .search({
-                index: path,
+                index: `${path}*`,
                 _source_excludes: ['detail'],
                 body: {
                     query: {
-                        ...(Object.keys(keywords)
+                        ...(must.length
                             ? {
-                                  bool: keywords,
+                                  bool: { must },
                               }
                             : { match_all: {} }),
                     },
-                    ...(page
-                        ? { size: 12, from: +page * 12 }
-                        : { size: 10000 }),
+                    size: 12,
+                    from: (+page - 1 || 0) * 12,
                 },
             })
             .then((el) =>
-                el.body.hits.hits.map((el: any) => ({
-                    ...data,
-                    id: el._id,
-                    ...el._source,
-                })),
+                count
+                    ? el.body.hits.total.value
+                    : el.body.hits.hits.length
+                    ? el.body.hits.hits.map((el: any) => ({
+                          id: el._id,
+                          ...el._source,
+                      }))
+                    : null,
             );
     }
 
@@ -112,35 +97,31 @@ export class CrawlingService {
     async findeDetailCrawling({
         path,
         id,
-    }: findeDetailType): Promise<findeDetail | null> {
-        const obj = {
-            outside: () =>
-                this.prisma.outside.update({
-                    where: { id },
-                    data: { view: { increment: 1 } },
-                }),
-            intern: () =>
-                this.prisma.intern.update({
-                    where: { id },
-                    data: { view: { increment: 1 } },
-                }),
-            competition: () =>
-                this.prisma.competition.update({
-                    where: { id },
-                    data: { view: { increment: 1 } },
-                }),
-            language: () => this.prisma.language.findUnique({ where: { id } }),
-            qnet: () =>
-                this.prisma.qNet.update({
-                    where: { id },
-                    data: { view: { increment: 1 } },
-                    include: {
-                        examSchedules: true,
-                    },
-                }),
-        };
+    }: findeDetailType): Promise<any | null> {
+        // 없는 id로 조회할시 error, status 400
+        // ignore : [400]
+        // 400일때 무시한다.
+        // 결과값에 body.error가 표시
+        // 정상작동일때는 error가 없음
+        // language는 상세조회가 없지 않나? 있으면 로직 추가 예정
 
-        return (obj[path] || obj['language'])();
+        return await this.elastic
+            .update(
+                {
+                    index: path,
+                    id,
+                    body: {
+                        script: {
+                            source: 'ctx._source.view++',
+                        },
+                        _source: true,
+                    },
+                },
+                { ignore: [404] },
+            )
+            .then((el) =>
+                el.body.error ? el.meta.context : el.body.get._source,
+            );
     }
 
     async createLanguageData({
@@ -165,19 +146,22 @@ export class CrawlingService {
         data,
         path,
         month,
+        scale,
     }: {
         data: T;
         path: createLinkareerPaths;
         month: number;
+        scale?: number | undefined;
     }): Promise<boolean> {
-        const qqq = await this.elastic.index({
+        await this.elastic.index({
             index: path,
             body: {
                 ...data,
+                ...(scale && { scale }),
                 ...(month && { month }),
             },
         });
-        console.log(qqq);
+
         return true;
     }
 
@@ -193,85 +177,36 @@ export class CrawlingService {
         return true;
     }
 
-    async bsetData({ path }: Path): Promise<findCrawling> {
-        const dataDB = {
-            outside: () =>
-                this.prisma.outside.findMany({
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
-                    },
-                    orderBy: { view: 'desc' },
-                    take: 12,
-                }),
-            competition: () =>
-                this.prisma.competition.findMany({
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
-                    },
-                    orderBy: {
-                        view: 'desc',
-                    },
-                    take: 12,
-                }),
-            intern: () =>
-                this.prisma.intern.findMany({
-                    select: {
-                        id: true,
-                        title: true,
-                        view: true,
-                        enterprise: true,
-                        Dday: true,
-                        mainImage: true,
-                        applicationPeriod: true,
-                        region: true,
-                    },
-                    orderBy: {
-                        view: 'desc',
-                    },
-                    take: 12,
-                }),
-            qnet: () =>
-                this.prisma.qNet.findMany({
-                    select: {
-                        jmNm: true,
-                        engJmNm: true,
-                        instiNm: true,
-                        implNm: true,
-                        view: true,
-                        examSchedules: {
-                            skip: 0,
-                            take: 1,
-                            orderBy: {
-                                resultDay: 'desc',
-                            },
-                        },
-                    },
-                    take: 12,
-                }),
-            community: () =>
-                this.prisma.community.findMany({
-                    orderBy: {
-                        view: 'desc',
-                    },
-                    include: {
-                        user: true,
-                    },
-                    take: 12,
-                }),
-        };
+    async bsetData({ path }: Path | { path: 'community' }): Promise<any> {
+        if (path === 'community') {
+            return this.prisma.community.findMany({
+                orderBy: {
+                    view: 'desc',
+                },
+                include: {
+                    user: true,
+                },
+                take: 12,
+            });
+        }
 
-        return dataDB[path]();
+        return this.elastic
+            .search({
+                index: path,
+                _source_excludes: ['detail'],
+                body: {
+                    sort: { view: { order: 'desc' } },
+                    query: {
+                        match_all: {},
+                    },
+                },
+                size: 12,
+            })
+            .then((el) =>
+                el.body.hits.hits.map((el: any) => ({
+                    id: el._id,
+                    ...el._source,
+                })),
+            );
     }
 }
