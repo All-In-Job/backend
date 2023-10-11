@@ -1,14 +1,8 @@
-import { Language, QNet, SubCategory } from '@prisma/client';
 import {
-    CompetitionType,
-    InternType,
-    OutsideType,
     Path,
-    createCrawiling,
     createLinkareerPaths,
     createQNet,
     findCrawling,
-    findeDetail,
     findeDetailType,
     languagePath,
     paths,
@@ -81,7 +75,7 @@ export class CrawlingService {
         const obj = {
             competition: 'interests',
             outside: 'field',
-            intern: 'enterprise',
+            intern: 'institution',
             qnet: 'mainCategory',
             language: 'test',
         };
@@ -98,11 +92,6 @@ export class CrawlingService {
         path,
         id,
     }: findeDetailType): Promise<any | null> {
-        // 없는 id로 조회할시 error, status 400
-        // ignore : [400]
-        // 400일때 무시한다.
-        // 결과값에 body.error가 표시
-        // 정상작동일때는 error가 없음
         // language는 상세조회가 없지 않나? 있으면 로직 추가 예정
 
         return await this.elastic
@@ -157,6 +146,7 @@ export class CrawlingService {
             index: path,
             body: {
                 ...data,
+                scrap: 0,
                 ...(scale && { scale }),
                 ...(month && { month }),
             },
@@ -171,6 +161,7 @@ export class CrawlingService {
             body: {
                 ...data,
                 ...categoryObj,
+                scrap: 0,
             },
         });
 

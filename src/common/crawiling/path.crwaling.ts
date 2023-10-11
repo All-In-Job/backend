@@ -105,6 +105,7 @@ export class PathCrawling {
                             mainImage: $(`img.${mainImageType}`).attr('src'),
                             organization: $('h2.organization-name').text(),
                             ...dataType,
+                            ...(dataType.scale && { scale: +dataType.scale }),
                             detail: $(
                                 'div.ActivityDetailTabContent__StyledWrapper-sc-5db6cf4b-0.bDYgjm',
                             ).html(),
@@ -112,7 +113,6 @@ export class PathCrawling {
 
                         return this.crawlingServcie.createLinkareerData({
                             data,
-                            ...(dataType.scale && { scale: +dataType.scale }),
                             path,
                             month,
                         });
@@ -190,8 +190,7 @@ export class PathCrawling {
 
         dataList.forEach((arr) => {
             arr.forEach(async (el: itmeType) => {
-                const { jmCd, implNm, engJmNm, instiNm, jmNm, mdobligFldNm } =
-                    el;
+                const { jmCd, implNm, engJmNm, instiNm, jmNm } = el;
                 if (QNetObj[jmCd]) {
                     const dataList = await axios.get(
                         `https://www.q-net.or.kr/crf005.do?id=crf00503s02&gSite=Q&gId=&jmCd=${jmCd}&jmInfoDivCcd=B0&jmNm=${implNm}`,
@@ -241,10 +240,11 @@ export class PathCrawling {
                         detail,
                         scheduleInfo: $('div.infoBox.mt10.mb40').html() ?? '',
                         examSchedules,
-                        jmNm,
-                        engJmNm,
-                        instiNm,
-                        implNm,
+                        title: jmNm,
+                        enTitle: engJmNm,
+                        relatedDepartment: instiNm,
+                        institution: implNm,
+                        scrap: 0,
                     };
 
                     await this.crawlingServcie.createQNetData({

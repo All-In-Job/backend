@@ -5,7 +5,7 @@ import { CreateCommunityDTO } from '../../apis/community/dto/create.input';
 import { asyncHandler } from '../../middleware/async.handler';
 import { FindOneCommunityDTO } from '../../apis/community/dto/findOne.community';
 import { FindManyCommunityDTO } from '../../apis/community/dto/findMany.community';
-import { idType, pathType } from '../types';
+import { categoryType, idType, pathType } from '../types';
 import { ToggleLikeCommunityDTO } from '../../apis/community/dto/create.community.toggleLike';
 import { CreateCommunityCommentDTO } from '../../apis/community/dto/create.comment.input';
 import { CommentLikeCommunityDTO } from '../../apis/community/dto/create.comment.like.input';
@@ -49,7 +49,7 @@ class Validate {
     }
 
     async findManyCommunity(req: Request, _: Response, next: NextFunction) {
-        await this.errors(new FindManyCommunityDTO(req.query as pathType));
+        await this.errors(new FindManyCommunityDTO(req.query as categoryType));
 
         next();
     }

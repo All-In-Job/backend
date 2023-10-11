@@ -31,14 +31,14 @@ export class CommunityService {
     }
 
     findeMany({
-        path,
+        category,
         title,
         nickName: nickname,
         content,
     }: FindManyCommunityDTO): Promise<Community[]> {
         return this.prisma.community.findMany({
             where: {
-                ...(path && { path }),
+                ...(category && { category }),
                 ...(title && { title: { contains: title } }),
                 ...(nickname && { user: { nickname: { contains: nickname } } }),
                 ...(content && {

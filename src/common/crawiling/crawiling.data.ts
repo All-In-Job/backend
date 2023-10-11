@@ -12,12 +12,12 @@ export const linkareerType = (path: string, i: number) => {
                 i + 1
             }%2C%22activityOrder%22%3A%7B%22field%22%3A%22CREATED_AT%22%2C%22direction%22%3A%22DESC%22%7D%2C%22withManager%22%3Atrue%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228825f82938c33738717c30842b55557c56990f963907c69bac8e9d19ea484359%22%7D%7D`;
             dataType = {
-                enterprise: '',
+                institution: '',
                 target: '',
-                applicationPeriod: '',
+                date: '',
                 participationPeriod: '',
                 personnel: '',
-                region: '',
+                location: '',
                 preferentialTreatment: '',
                 homePage: '',
                 benefits: '',
@@ -32,13 +32,13 @@ export const linkareerType = (path: string, i: number) => {
                 i + 1
             }%2C%22pageSize%22%3A20%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%22cacb5fff62346779e715a849c212cd8ce31b37c4154bb7e6508239063281c825%22%7D%7D`;
             dataType = {
-                enterprise: '',
-                applicationPeriod: '',
+                institution: '',
+                date: '',
                 preferentialTreatment: '',
                 personnel: '',
                 target: '',
                 homePage: '',
-                region: '',
+                location: '',
             };
             detailClass = 'jss5';
             mainImageType = 'recruit-image';
@@ -49,10 +49,10 @@ export const linkareerType = (path: string, i: number) => {
                 i + 1
             }%2C%22activityOrder%22%3A%7B%22field%22%3A%22CREATED_AT%22%2C%22direction%22%3A%22DESC%22%7D%2C%22withManager%22%3Atrue%7D&extensions=%7B%22persistedQuery%22%3A%7B%22version%22%3A1%2C%22sha256Hash%22%3A%228825f82938c33738717c30842b55557c56990f963907c69bac8e9d19ea484359%22%7D%7D`;
             dataType = {
-                enterprise: '',
+                institution: '',
                 target: '',
                 scale: '',
-                applicationPeriod: '',
+                date: '',
                 homePage: '',
                 benefits: '',
                 interests: '',
@@ -72,7 +72,7 @@ export const languageType = (test: string) => {
         turn: '',
         Dday: '',
         resultDay: '',
-        applicationPeriod: '',
+        date: '',
     };
 
     switch (test) {
@@ -81,18 +81,18 @@ export const languageType = (test: string) => {
             break;
         case 'toeicBR':
             url = 'https://www.toeicbridge.co.kr/receipt/examSchList.php';
-            dataObj = { Dday: '', resultDay: '', applicationPeriod: '' };
+            dataObj = { Dday: '', resultDay: '', date: '' };
             break;
         case 'toeicSW':
             testType = 'tr.speakingwriting';
-            dataObj = { Dday: '', resultDay: '', applicationPeriod: '' };
+            dataObj = { Dday: '', resultDay: '', date: '' };
             break;
         case 'toeicWT':
             testType = 'tr.writing';
-            dataObj = { Dday: '', resultDay: '', applicationPeriod: '' };
+            dataObj = { Dday: '', resultDay: '', date: '' };
             break;
         case 'toeicST':
-            dataObj = { Dday: '', resultDay: '', applicationPeriod: '' };
+            dataObj = { Dday: '', resultDay: '', date: '' };
             break;
         case 'ch':
             url = 'https://www.ybmtsc.co.kr/receipt/examSchList.php';

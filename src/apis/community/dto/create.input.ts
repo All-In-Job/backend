@@ -3,7 +3,7 @@ import { IsString } from 'class-validator';
 
 export class CreateCommunityDTO {
     @IsString()
-    path: Community['path'];
+    category: Community['category'];
 
     @IsString()
     title: Community['title'];
@@ -12,7 +12,7 @@ export class CreateCommunityDTO {
     detail: Community['detail'];
 
     constructor(data: CreateCommunityDTO) {
-        this.path = data.path;
+        this.category = data.category;
         this.title = data.title;
         this.detail = data.detail;
     }

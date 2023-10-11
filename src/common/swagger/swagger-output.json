@@ -701,8 +701,8 @@
                                                     "title": "제목 : 모집",
                                                     "view": 100,
                                                     "mainImage": "이미지 url",
-                                                    "enterprise": "주최기관 : 대기업",
-                                                    "applicationPeriod": "접수기간 : 23.9.12 ~ 23.9.18"
+                                                    "institution": "주최기관 : 대기업",
+                                                    "date": "접수기간 : 23.9.12 ~ 23.9.18"
                                                 }
                                             ]
                                         }
@@ -717,8 +717,8 @@
                                                     "title": "제목",
                                                     "view": 100,
                                                     "mainImage": "이미지 url : awihqwifbjqjfbo",
-                                                    "enterprise": "주체 기관 : 대기업",
-                                                    "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11"
+                                                    "institution": "주체 기관 : 대기업",
+                                                    "date": "접수 기간 : 23.8.28 ~ 23.9.11"
                                                 }
                                             ]
                                         }
@@ -733,8 +733,8 @@
                                                     "title": "제목",
                                                     "view": 100,
                                                     "mainImage": "이미지 url : awihqwifbjqjfbo",
-                                                    "enterprise": "주체 기관 : 공공기관/공기업",
-                                                    "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11"
+                                                    "institution": "주체 기관 : 공공기관/공기업",
+                                                    "date": "접수 기간 : 23.8.28 ~ 23.9.11"
                                                 }
                                             ]
                                         }
@@ -745,10 +745,10 @@
                                             "data": [
                                                 {
                                                     "id": "자격증 id : adfhttwerqwrasxczx",
-                                                    "jmNm": "자격증명 : 에너지산업기사",
-                                                    "engJmNm": "자격증 영어명 : Engineer Energy Management or null",
-                                                    "instiNm": "과련부처 : 통겨청",
-                                                    "implNm": "시행기관 : 한국산업인력공단",
+                                                    "title": "자격증명 : 에너지산업기사",
+                                                    "engTitle": "자격증 영어명 : Engineer Energy Management or null",
+                                                    "relatedDepartment": "과련부처 : 통겨청",
+                                                    "institution": "시행기관 : 한국산업인력공단",
                                                     "examSchedules": [
                                                         {
                                                             "id": "회차 id : adfhttwerqwrasxczx",
@@ -771,10 +771,10 @@
                                             "data": [
                                                 {
                                                     "id": "커뮤니티 id : 255617b0-446c-477e-96c9-cb9fe54bc6cc",
-                                                    "path": "경로 : 공모전/대외활동",
+                                                    "category": "경로 : 공모전/대외활동",
                                                     "title": "제목 : 공모전 활동",
                                                     "detail": "상세내용 : html코드",
-                                                    "createAt": "등록 시간 : 2023-09-16",
+                                                    "date": "등록 시간 : 2023-09-16",
                                                     "view": 0,
                                                     "likeCount": 0,
                                                     "commentCount": 0,
@@ -814,36 +814,10 @@
                                                 "mainImage": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "Dday": {
-                                                    "type": "string"
-                                                },
-                                                "title": {
-                                                    "type": "string"
-                                                },
-                                                "view": {
-                                                    "type": "number"
-                                                },
-                                                "mainImage": {
-                                                    "type": "string"
-                                                },
-                                                "enterprise": {
-                                                    "type": "string"
-                                                },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -866,10 +840,36 @@
                                                 "mainImage": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "Dday": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "view": {
+                                                    "type": "number"
+                                                },
+                                                "mainImage": {
+                                                    "type": "string"
+                                                },
+                                                "institution": {
+                                                    "type": "string"
+                                                },
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -895,7 +895,7 @@
                                                 "resultDay": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -906,16 +906,16 @@
                                                 "id": {
                                                     "type": "string"
                                                 },
-                                                "jmNm": {
+                                                "title": {
                                                     "type": "string"
                                                 },
-                                                "engJmNm": {
+                                                "engTitle": {
                                                     "type": "string | null"
                                                 },
-                                                "instiNm": {
+                                                "relatedDepartment": {
                                                     "type": "string"
                                                 },
-                                                "implNm": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
                                                 "examSchedules": {
@@ -1101,21 +1101,21 @@
                         "description": "대외활동 (활동혜택 검색), 공모전(수상혜택) 복수형태는 , 로 구분"
                     },
                     {
-                        "name": "region",
+                        "name": "location",
                         "in": "query",
                         "schema": {
                             "type": "string",
-                            "format": "region",
+                            "format": "location",
                             "example": "서울,대전"
                         },
                         "description": "대외활동,인턴 (지역 검색) 복수형태는 , 로 구분"
                     },
                     {
-                        "name": "enterprise",
+                        "name": "institution",
                         "in": "query",
                         "schema": {
                             "type": "string",
-                            "format": "enterprise",
+                            "format": "institution",
                             "example": "중소기업"
                         },
                         "description": "인턴 (규모로 검색)"
@@ -1193,8 +1193,8 @@
                                                     "title": "제목 : 모집",
                                                     "view": 100,
                                                     "mainImage": "이미지 url",
-                                                    "enterprise": "주최기관 : 대기업",
-                                                    "applicationPeriod": "접수기간 : 23.9.12 ~ 23.9.18"
+                                                    "institution": "주최기관 : 대기업",
+                                                    "date": "접수기간 : 23.9.12 ~ 23.9.18"
                                                 }
                                             ]
                                         }
@@ -1209,8 +1209,8 @@
                                                     "title": "제목",
                                                     "view": 100,
                                                     "mainImage": "이미지 url : awihqwifbjqjfbo",
-                                                    "enterprise": "주체 기관 : 대기업",
-                                                    "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11"
+                                                    "institution": "주체 기관 : 대기업",
+                                                    "date": "접수 기간 : 23.8.28 ~ 23.9.11"
                                                 }
                                             ]
                                         }
@@ -1225,8 +1225,8 @@
                                                     "title": "제목",
                                                     "view": 100,
                                                     "mainImage": "이미지 url : awihqwifbjqjfbo",
-                                                    "enterprise": "주체 기관 : 공공기관/공기업",
-                                                    "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11"
+                                                    "institution": "주체 기관 : 공공기관/공기업",
+                                                    "date": "접수 기간 : 23.8.28 ~ 23.9.11"
                                                 }
                                             ]
                                         }
@@ -1242,7 +1242,7 @@
                                                     "turn": "회차 : 1회차 or null",
                                                     "Dday": "시험날짜 : 2023.11.26(일)오전9시20분",
                                                     "resultDay": "결과 발표 날짜 : 2023.12.06(수)낮12시",
-                                                    "applicationPeriod": "접수 기간 : 정기접수:2023.10.09(월)오전10시~2023.11.13(월)오전10시특별추가:2023.11.15(수)오전10시~2023.11.23(목)낮12시"
+                                                    "date": "접수 기간 : 정기접수:2023.10.09(월)오전10시~2023.11.13(월)오전10시특별추가:2023.11.15(수)오전10시~2023.11.23(목)낮12시"
                                                 }
                                             ]
                                         }
@@ -1253,10 +1253,10 @@
                                             "data": [
                                                 {
                                                     "id": "자격증 id : adfhttwerqwrasxczx",
-                                                    "jmNm": "자격증명 : 에너지산업기사",
-                                                    "engJmNm": "자격증 영어명 : Engineer Energy Management or null",
-                                                    "instiNm": "과련부처 : 통겨청",
-                                                    "implNm": "시행기관 : 한국산업인력공단",
+                                                    "title": "자격증명 : 에너지산업기사",
+                                                    "engTitle": "자격증 영어명 : Engineer Energy Management or null",
+                                                    "relatedDepartment": "과련부처 : 통겨청",
+                                                    "institution": "시행기관 : 한국산업인력공단",
                                                     "examSchedules": [
                                                         {
                                                             "id": "회차 id : adfhttwerqwrasxczx",
@@ -1297,36 +1297,10 @@
                                                 "mainImage": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
-                                                    "type": "string"
-                                                }
-                                            }
-                                        },
-                                        {
-                                            "type": "object",
-                                            "properties": {
-                                                "id": {
-                                                    "type": "string"
-                                                },
-                                                "Dday": {
-                                                    "type": "string"
-                                                },
-                                                "title": {
-                                                    "type": "string"
-                                                },
-                                                "view": {
-                                                    "type": "number"
-                                                },
-                                                "mainImage": {
-                                                    "type": "string"
-                                                },
-                                                "enterprise": {
-                                                    "type": "string"
-                                                },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -1349,10 +1323,36 @@
                                                 "mainImage": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
+                                                    "type": "string"
+                                                }
+                                            }
+                                        },
+                                        {
+                                            "type": "object",
+                                            "properties": {
+                                                "id": {
+                                                    "type": "string"
+                                                },
+                                                "Dday": {
+                                                    "type": "string"
+                                                },
+                                                "title": {
+                                                    "type": "string"
+                                                },
+                                                "view": {
+                                                    "type": "number"
+                                                },
+                                                "mainImage": {
+                                                    "type": "string"
+                                                },
+                                                "institution": {
+                                                    "type": "string"
+                                                },
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -1378,7 +1378,7 @@
                                                 "resultDay": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -1389,16 +1389,16 @@
                                                 "id": {
                                                     "type": "string"
                                                 },
-                                                "jmNm": {
+                                                "title": {
                                                     "type": "string"
                                                 },
-                                                "engJmNm": {
+                                                "engTitle": {
                                                     "type": "string | null"
                                                 },
-                                                "instiNm": {
+                                                "relatedDepartment": {
                                                     "type": "string"
                                                 },
-                                                "implNm": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
                                                 "examSchedules": {
@@ -1495,13 +1495,13 @@
                                                 "view": 100,
                                                 "mainImage": "이미지 url",
                                                 "organization": "조직 : (주)~~",
-                                                "enterprise": "주최기관 : 대기업",
-                                                "applicationPeriod": "접수기간 : 23.9.12 ~ 23.9.18",
+                                                "institution": "주최기관 : 대기업",
+                                                "date": "접수기간 : 23.9.12 ~ 23.9.18",
                                                 "participationPeriod": "활동기간 : 23.10.4 ~ 23.12.31",
                                                 "preferentialTreatment": "우대상항 : 컴퓨터 활용능력, 휴학 중/시간 투자 가능",
                                                 "personnel": "모집 인원 : 10명",
                                                 "target": "참여 대상 : 대학생",
-                                                "region": "지역 : 서울",
+                                                "location": "지역 : 서울",
                                                 "hompage": "주체 홈페이지 :awihqwifbjqjfbo",
                                                 "benefits": "활동 혜택 : 활동비,입사시 혜택",
                                                 "interests": "관심 분야 : 콘텐츠, 디자인/사진/영상",
@@ -1520,12 +1520,12 @@
                                                 "view": 100,
                                                 "mainImage": "이미지 url : awihqwifbjqjfbo",
                                                 "organization": "조직 : 한국정보인증",
-                                                "enterprise": "주체 기관 : 대기업",
-                                                "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11",
+                                                "institution": "주체 기관 : 대기업",
+                                                "date": "접수 기간 : 23.8.28 ~ 23.9.11",
                                                 "preferentialTreatment": "모집 직무 : IT/인터넷",
                                                 "personnel": "채용인원 : 10명",
                                                 "target": "채용형태 : 인턴",
-                                                "region": "지역 : 서울",
+                                                "location": "지역 : 서울",
                                                 "hompage": "채용 홈페이지 : http://~~",
                                                 "detail": "html 코드"
                                             }
@@ -1541,8 +1541,8 @@
                                                 "view": 100,
                                                 "mainImage": "이미지 url : awihqwifbjqjfbo",
                                                 "organization": "조직 : 한국교육개발원",
-                                                "enterprise": "주체 기관 : 공공기관/공기업",
-                                                "applicationPeriod": "접수 기간 : 23.8.28 ~ 23.9.11",
+                                                "institution": "주체 기관 : 공공기관/공기업",
+                                                "date": "접수 기간 : 23.8.28 ~ 23.9.11",
                                                 "scale": 100,
                                                 "benefits": "활동 혜택 : 상장 수여",
                                                 "target": "참여대상 : 청소년, 대학생",
@@ -1562,7 +1562,7 @@
                                                 "turn": "회차 : 1회차 or null",
                                                 "Dday": "시험날짜 : 2023.11.26(일)오전9시20분",
                                                 "resultDay": "결과 발표 날짜 : 2023.12.06(수)낮12시",
-                                                "applicationPeriod": "접수 기간 : 정기접수:2023.10.09(월)오전10시~2023.11.13(월)오전10시특별추가:2023.11.15(수)오전10시~2023.11.23(목)낮12시"
+                                                "date": "접수 기간 : 정기접수:2023.10.09(월)오전10시~2023.11.13(월)오전10시특별추가:2023.11.15(수)오전10시~2023.11.23(목)낮12시"
                                             }
                                         }
                                     },
@@ -1573,10 +1573,10 @@
                                                 "id": "자격증 id : adfhttwerqwrasxczx",
                                                 "detail": "html 코드",
                                                 "scheduleInfo": "시험 일정 설명 : html 코드",
-                                                "jmNm": "자격증명 : 에너지산업기사",
-                                                "engJmNm": "자격증 영어명 : Engineer Energy Management or null",
-                                                "instiNm": "과련부처 : 통겨청",
-                                                "implNm": "시행기관 : 한국산업인력공단",
+                                                "title": "자격증명 : 에너지산업기사",
+                                                "engTitle": "자격증 영어명 : Engineer Energy Management or null",
+                                                "relatedDepartment": "과련부처 : 통겨청",
+                                                "institution": "시행기관 : 한국산업인력공단",
                                                 "examSchedules": [
                                                     {
                                                         "id": "회차 id : adfhttwerqwrasxczx",
@@ -1617,10 +1617,10 @@
                                                 "organization": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 },
                                                 "participationPeriod": {
@@ -1635,7 +1635,7 @@
                                                 "target": {
                                                     "type": "string"
                                                 },
-                                                "region": {
+                                                "location": {
                                                     "type": "string"
                                                 },
                                                 "hompage": {
@@ -1676,10 +1676,10 @@
                                                 "organization": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 },
                                                 "preferentialTreatment": {
@@ -1691,7 +1691,7 @@
                                                 "target": {
                                                     "type": "string"
                                                 },
-                                                "region": {
+                                                "location": {
                                                     "type": "string"
                                                 },
                                                 "hompage": {
@@ -1723,10 +1723,10 @@
                                                 "organization": {
                                                     "type": "string"
                                                 },
-                                                "enterprise": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 },
                                                 "scale": {
@@ -1770,7 +1770,7 @@
                                                 "resultDay": {
                                                     "type": "string"
                                                 },
-                                                "applicationPeriod": {
+                                                "date": {
                                                     "type": "string"
                                                 }
                                             }
@@ -1787,16 +1787,16 @@
                                                 "scheduleInfo": {
                                                     "type": "string"
                                                 },
-                                                "jmNm": {
+                                                "title": {
                                                     "type": "string"
                                                 },
-                                                "engJmNm": {
+                                                "engTitle": {
                                                     "type": "string | null"
                                                 },
-                                                "instiNm": {
+                                                "relatedDepartment": {
                                                     "type": "string"
                                                 },
-                                                "implNm": {
+                                                "institution": {
                                                     "type": "string"
                                                 },
                                                 "examSchedules": {

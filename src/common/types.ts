@@ -13,6 +13,10 @@ export type pathType = {
     path: string;
 };
 
+export type categoryType = {
+    category: string;
+};
+
 export type classifyType = {
     classify: string;
 };

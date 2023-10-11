@@ -4,7 +4,7 @@ import { Community, User } from '@prisma/client';
 export class FindManyCommunityDTO {
     @IsString()
     @ValidateIf((_, value) => value)
-    path?: Community['path'];
+    category?: Community['category'];
 
     @IsString()
     @ValidateIf((_, value) => value)
@@ -19,7 +19,7 @@ export class FindManyCommunityDTO {
     content?: string;
 
     constructor(data: FindManyCommunityDTO) {
-        this.path = data.path;
+        this.category = data.category;
         this.title = data.title;
         this.nickName = data.nickName;
         this.content = data.content;

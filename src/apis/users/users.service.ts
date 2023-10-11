@@ -9,12 +9,14 @@ import RedisClient from '../../database/redisConfig';
 import CustomError from '../../common/error/customError';
 import { Service } from 'typedi';
 import { FindUserKeywordDTO } from './dto/findUserKeyword.dto';
+import { ElasitcClient } from '../../database/elasticConfig';
 
 @Service()
 export class UserService {
     constructor(
         private readonly prisma: CustomPrismaClient, //
         private readonly redis: RedisClient,
+        private readonly elastic: ElasitcClient,
     ) {}
 
     async findUserKeyword({
@@ -22,40 +24,56 @@ export class UserService {
         path,
         classify,
     }: FindUserKeywordDTO): Promise<string> {
-        return await this.prisma.user
-            .findUnique({
-                where: {
-                    id,
-                },
-                include: {
-                    interests: {
-                        include: {
-                            interest: true,
-                            keyword: true,
-                        },
+        const result = await this.prisma.user.findUnique({
+            where: {
+                id,
+            },
+            include: {
+                interests: {
+                    include: {
+                        interest: true,
+                        keyword: true,
                     },
                 },
-            })
-            .then(async (result) => {
-                let keywords = result!.interests.map(
-                    (interest) =>
-                        interest.interest.interest === path &&
-                        interest.keyword.keyword,
-                );
-                if (classify) {
-                    keywords = await Promise.all(
-                        keywords.map(async (test) => {
-                            return test &&
-                                (await this.prisma.language.findFirst({
-                                    where: { test, classify },
-                                }))
-                                ? test
-                                : false;
-                        }),
-                    );
-                }
-                return keywords.filter((el) => el).join(',');
-            });
+            },
+        });
+
+        let keywords: string[] = [];
+
+        result!.interests.forEach(
+            (el) =>
+                el.interest.interest === path &&
+                keywords.push(el.keyword.keyword),
+        );
+
+        if (classify) {
+            keywords = await Promise.all(
+                keywords.map(async (test) => {
+                    return this.elastic
+                        .search({
+                            index: path,
+                            _source: 'test',
+                            size: 1,
+                            body: {
+                                query: {
+                                    bool: {
+                                        must: [
+                                            { match: { classify } },
+                                            { match: { test } },
+                                        ],
+                                    },
+                                },
+                            },
+                        })
+                        .then((data) => {
+                            const hits = data.body.hits.hits[0];
+                            return hits && hits._source.test;
+                        });
+                }),
+            );
+        }
+
+        return keywords.filter((el) => el).join(' ');
     }
 
     findOneUserByEmail(email: string): Promise<User | null> {
