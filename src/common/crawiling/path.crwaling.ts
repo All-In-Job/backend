@@ -245,6 +245,7 @@ export class PathCrawling {
                         relatedDepartment: instiNm,
                         institution: implNm,
                         scrap: 0,
+                        view: 0,
                     };
 
                     await this.crawlingServcie.createQNetData({

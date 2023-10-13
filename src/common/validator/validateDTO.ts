@@ -5,10 +5,25 @@ import { CreateCommunityDTO } from '../../apis/community/dto/create.input';
 import { asyncHandler } from '../../middleware/async.handler';
 import { FindOneCommunityDTO } from '../../apis/community/dto/findOne.community';
 import { FindManyCommunityDTO } from '../../apis/community/dto/findMany.community';
-import { categoryType, idType, pathType } from '../types';
+import {
+    email,
+    findOneUserByIDType,
+    idType,
+    pathIdtype,
+    pathType,
+    phoneType,
+    categoryType,
+} from '../types';
 import { ToggleLikeCommunityDTO } from '../../apis/community/dto/create.community.toggleLike';
 import { CreateCommunityCommentDTO } from '../../apis/community/dto/create.comment.input';
 import { CommentLikeCommunityDTO } from '../../apis/community/dto/create.comment.like.input';
+import { UpdateUserDTO } from '../../apis/users/dto/update-user.dto';
+import { FindOneUserByEmailDTO } from '../../apis/users/dto/findOneUserByEmail.dto';
+import { FindOneUserByIdDTO } from '../../apis/users/dto/findOneUserByID.dto';
+import { CreateUserDTO } from '../../apis/users/dto/create-user.dto';
+import { SendTokenSmsDTO } from '../util/sms/dto/sendTokenSMS.dto';
+import { ValidateTokenDTO } from '../util/sms/dto/validateToken.dto';
+import { ScrappingDTO } from '../../apis/users/dto/scrapping.dto';
 
 class Validate {
     constructor() {
@@ -26,6 +41,15 @@ class Validate {
         this.commentLikeCommunity = asyncHandler(
             this.commentLikeCommunity.bind(this),
         );
+        this.updateProfile = asyncHandler(this.updateProfile.bind(this));
+        this.findOneUserByEmail = asyncHandler(
+            this.findOneUserByEmail.bind(this),
+        );
+        this.findOneUserByID = asyncHandler(this.findOneUserByID.bind(this));
+        this.createUser = asyncHandler(this.createUser.bind(this));
+        this.sendTokenSMS = asyncHandler(this.sendTokenSMS.bind(this));
+        this.validateToken = asyncHandler(this.validateToken.bind(this));
+        this.updateProfile = asyncHandler(this.updateProfile.bind(this));
     }
 
     async errors<T extends object>(dto: T) {
@@ -82,6 +106,48 @@ class Validate {
     async commentLikeCommunity(req: Request, _: Response, next: NextFunction) {
         const { id: commentId } = req.params as idType;
         await this.errors(new CommentLikeCommunityDTO({ commentId }));
+
+        next();
+    }
+
+    async updateProfile(req: Request, _: Response, next: NextFunction) {
+        const { profileImage, nickname, interests } = req.body;
+        await this.errors(
+            new UpdateUserDTO({ profileImage, nickname, interests }),
+        );
+
+        next();
+    }
+
+    async findOneUserByEmail(req: Request, _: Response, next: NextFunction) {
+        const { email } = req.query as email;
+        await this.errors(new FindOneUserByEmailDTO({ email }));
+
+        next();
+    }
+
+    async findOneUserByID(req: Request, _: Response, next: NextFunction) {
+        const { name, phone } = req.query as findOneUserByIDType;
+        await this.errors(new FindOneUserByIdDTO({ name, phone }));
+
+        next();
+    }
+
+    async createUser(req: Request, _: Response, next: NextFunction) {
+        await this.errors(new CreateUserDTO(req.body));
+
+        next();
+    }
+
+    async sendTokenSMS(req: Request, _: Response, next: NextFunction) {
+        const { phone } = req.body as phoneType;
+        await this.errors(new SendTokenSmsDTO({ phone }));
+
+        next();
+    }
+
+    async validateToken(req: Request, _: Response, next: NextFunction) {
+        await this.errors(new ValidateTokenDTO(req.body));
 
         next();
     }

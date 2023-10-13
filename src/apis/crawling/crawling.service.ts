@@ -15,7 +15,7 @@ import { ElasitcClient } from '../../database/elasticConfig';
 @Service()
 export class CrawlingService {
     constructor(
-        private readonly prisma: CustomPrismaClient, //
+        private readonly prisma: CustomPrismaClient,
         private readonly elastic: ElasitcClient,
         private readonly userService: UserService,
     ) {}
@@ -68,7 +68,9 @@ export class CrawlingService {
             );
     }
 
-    async myKeywordCrawling({ ...data }: paths): Promise<findCrawling> {
+    async myKeywordCrawling({
+        ...data
+    }: paths & { id: string }): Promise<findCrawling> {
         const userKeyword = await this.userService.findUserKeyword({
             ...data,
         });
@@ -79,10 +81,10 @@ export class CrawlingService {
             qnet: 'mainCategory',
             language: 'test',
         };
-
+        const { id, ..._data } = { ...data };
         const params = {
-            ...data,
-            [obj[data.path]]: userKeyword,
+            ..._data,
+            ...(userKeyword.length && { [obj[data.path]]: userKeyword }),
         };
 
         return await this.findeCrawling(params);
@@ -92,8 +94,6 @@ export class CrawlingService {
         path,
         id,
     }: findeDetailType): Promise<any | null> {
-        // language는 상세조회가 없지 않나? 있으면 로직 추가 예정
-
         return await this.elastic
             .update(
                 {
@@ -162,6 +162,7 @@ export class CrawlingService {
                 ...data,
                 ...categoryObj,
                 scrap: 0,
+                view: 0,
             },
         });
 

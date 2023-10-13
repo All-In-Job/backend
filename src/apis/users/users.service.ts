@@ -1,14 +1,25 @@
-import { Provider, User } from '@prisma/client';
+import {
+    Provider,
+    User,
+    UserInterest,
+    PrismaClient,
+    Prisma,
+} from '@prisma/client';
+import { DefaultArgs } from '@prisma/client/runtime/library';
 import { CustomPrismaClient } from '../../database/prismaConfig';
 import {
     IUserCreateDTO,
     IUserCreateThermometer,
     IUserFindOneUserByID,
+    IUserUpdateDTO,
 } from './interfaces/user.interface';
 import RedisClient from '../../database/redisConfig';
 import CustomError from '../../common/error/customError';
 import { Service } from 'typedi';
 import { FindUserKeywordDTO } from './dto/findUserKeyword.dto';
+import { ScrappingDTO } from './dto/scrapping.dto';
+import { UpdateUserDTO } from './dto/update-user.dto';
+import { Path } from '../../common/crawiling/interface';
 import { ElasitcClient } from '../../database/elasticConfig';
 
 @Service()
@@ -76,6 +87,48 @@ export class UserService {
         return keywords.filter((el) => el).join(' ');
     }
 
+    saveInterestKeyword(
+        prisma: Omit<
+            PrismaClient<Prisma.PrismaClientOptions, never, DefaultArgs>,
+            | '$connect'
+            | '$disconnect'
+            | '$on'
+            | '$transaction'
+            | '$use'
+            | '$extends'
+        >,
+        interests: object[],
+        id: string,
+    ) {
+        return Promise.all(
+            interests.map(async (el) => {
+                const [interest, keywords] = Object.entries(el)[0];
+                const createdInterest = await prisma.interest.upsert({
+                    where: { interest },
+                    update: {},
+                    create: { interest },
+                });
+
+                return Promise.all(
+                    keywords.map(async (keyword: string) => {
+                        const createdKeyword = await prisma.keyword.upsert({
+                            where: { keyword },
+                            update: {},
+                            create: { keyword },
+                        });
+                        await prisma.userInterest.create({
+                            data: {
+                                userId: id,
+                                interestId: createdInterest.id,
+                                keywordId: createdKeyword.id,
+                            },
+                        });
+                    }),
+                );
+            }),
+        );
+    }
+
     findOneUserByEmail(email: string): Promise<User | null> {
         return this.prisma.user.findUnique({
             where: {
@@ -100,11 +153,24 @@ export class UserService {
             },
             include: {
                 communities: true,
+                interests: true,
             },
         });
-        if (!isUser)
+        if (!isUser) {
             throw new CustomError('id가 일치하는 유저가 없습니다', 400);
+        }
+
         return isUser;
+    }
+
+    async isNickname(id: string, nickname: string): Promise<void> {
+        const isNickname = await this.prisma.user.findUnique({
+            where: {
+                nickname,
+            },
+        });
+        if (isNickname)
+            throw new CustomError('이미 존재하는 닉네임입니다', 400);
     }
 
     findOneUserByID({
@@ -123,7 +189,7 @@ export class UserService {
         });
     }
 
-    async createUser({ createDTO }: IUserCreateDTO): Promise<string> {
+    async createUser({ createDTO, qqq }: IUserCreateDTO): Promise<string> {
         const { interests, ...userData } = createDTO;
         const provider = await this.redis.get(userData.email);
 
@@ -137,34 +203,8 @@ export class UserService {
                     provider: provider as Provider,
                 },
             });
-            await Promise.all(
-                interests.map(async (el) => {
-                    const interest = Object.keys(el)[0];
-                    const keywords = Object.values(el)[0];
-                    const createdInterest = await prisma.interest.upsert({
-                        where: { interest },
-                        update: {},
-                        create: { interest },
-                    });
 
-                    return Promise.all(
-                        keywords.map(async (keyword) => {
-                            const createdKeyword = await prisma.keyword.upsert({
-                                where: { keyword },
-                                update: {},
-                                create: { keyword },
-                            });
-                            await prisma.userInterest.create({
-                                data: {
-                                    userId: user.id,
-                                    interestId: createdInterest.id,
-                                    keywordId: createdKeyword.id,
-                                },
-                            });
-                        }),
-                    );
-                }),
-            );
+            await this.saveInterestKeyword(prisma, interests, user.id);
             this.redis.del(userData.email);
             return user.id;
         });

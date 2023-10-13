@@ -44,11 +44,11 @@ services:
             - ./prisma:/backend/prisma
         depends_on:
             - db
-            - elasticsearch
-        environment:
-            - ELASTICSEARCH_HOST=elasticsearch
-            - HEALTHCHECK_URL=http://elasticsearch:9200/_cluster/health?wait_for_status=green&timeout=10s&level=shards%2Cindices&pretty=
-            - HEALTHCHECK_INTERVAL=5s
+        #     - elasticsearch
+        # environment:
+        #     - ELASTICSEARCH_HOST=elasticsearch
+        #     - HEALTHCHECK_URL=http://elasticsearch:9200/_cluster/health?wait_for_status=green&timeout=10s&level=shards%2Cindices&pretty=
+        #     - HEALTHCHECK_INTERVAL=5s
         env_file:
             - .env
         ports:

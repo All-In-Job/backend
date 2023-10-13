@@ -9,6 +9,15 @@ export type idType = {
     id: string;
 };
 
+export type phoneType = {
+    phone: CreateUserDTO['phone'];
+};
+
+export type pathIdtype = {
+    path: string;
+    scrapId: string;
+};
+
 export type pathType = {
     path: string;
 };

@@ -45,6 +45,7 @@ export interface createQNet {
         relatedDepartment: string;
         institution: string;
         scrap: number;
+        view: number;
         examSchedules: examSchedule[];
     };
     categoryObj: object;
@@ -55,7 +56,6 @@ export type Path = {
 };
 
 export type paths = {
-    id: idType['id'];
     path: Path['path'] | 'language';
     institution: string;
     preferentialTreatment: string;

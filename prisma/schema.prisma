@@ -36,15 +36,15 @@ model User {
   comments          Comment[]
   communityLike     CommunityLike[]
   commentLike       CommentLike[]
-  UserCompetition   UserCompetition? @relation(fields: [userCompetitionId], references: [id])
+  userCompetition   UserCompetition? @relation(fields: [userCompetitionId], references: [id])
   userCompetitionId String?
-  UserOutside       UserOutside?     @relation(fields: [userOutsideId], references: [id])
+  userOutside       UserOutside?     @relation(fields: [userOutsideId], references: [id])
   userOutsideId     String?
-  UserQnet          UserQnet?        @relation(fields: [userQnetId], references: [id])
+  userQnet          UserQnet?        @relation(fields: [userQnetId], references: [id])
   userQnetId        String?
-  UserLanguage      UserLanguage?    @relation(fields: [userLanguageId], references: [id])
+  userLanguage      UserLanguage?    @relation(fields: [userLanguageId], references: [id])
   userLanguageId    String?
-  UserIntern        UserIntern?      @relation(fields: [userInternId], references: [id])
+  userIntern        UserIntern?      @relation(fields: [userInternId], references: [id])
   userInternId      String?
 }
 
